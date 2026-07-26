@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+logs/
+*.log
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Editor / IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Claude Code local settings (personal, machine-specific)
+.claude/settings.local.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# npm/yarn/pnpm artifacts
+.npm/
+.pnpm-store/
+*.tgz

@@ -1,0 +1,55 @@
+{
+  "name": "webvirtualizer",
+  "version": "0.1.0",
+  "description": "A minimal, framework-agnostic list virtualization (windowing) core, built from scratch to understand the mechanics behind libraries like TanStack Virtual.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "npm run build && node --test 'dist/**/*.test.js'",
+    "lint": "oxlint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "demo": "tsc && python3 -m http.server 4173",
+    "prepublishOnly": "npm run clean && npm run lint && npm test"
+  },
+  "keywords": [
+    "virtualization",
+    "virtual-list",
+    "windowing",
+    "scroll",
+    "list",
+    "typescript"
+  ],
+  "author": "Jorge Iribe",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jorgeiiavila/webvirtualizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jorgeiiavila/webvirtualizer/issues"
+  },
+  "homepage": "https://github.com/jorgeiiavila/webvirtualizer#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "oxlint": "^1.75.0",
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2"
+  }
+}
