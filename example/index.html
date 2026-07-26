@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>webvirtualizer — Milestone 1 demo</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 2rem;
+        color: #1a1a1a;
+      }
+      #status {
+        margin-bottom: 0.5rem;
+        color: #555;
+        font-size: 0.9rem;
+        font-variant-numeric: tabular-nums;
+      }
+      #scroll-container {
+        height: 500px;
+        width: 420px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        position: relative;
+      }
+      #spacer {
+        position: relative;
+        width: 100%;
+      }
+      .row {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+      }
+      .row:nth-child(odd) {
+        background: #fafafa;
+      }
+      button {
+        margin-bottom: 1rem;
+        padding: 0.4rem 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>webvirtualizer — Milestone 1</h1>
+    <p>
+      Fixed-size vertical virtualizer core: 100,000 rows, only the ones near the viewport are
+      mounted.
+    </p>
+    <button id="jump-to-50000">Scroll to row #50,000</button>
+    <div id="status"></div>
+    <div id="scroll-container">
+      <div id="spacer"></div>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
