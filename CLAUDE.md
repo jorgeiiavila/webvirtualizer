@@ -18,7 +18,7 @@ over `useState`, why native `scroll` events over `IntersectionObserver`).
 ```sh
 npm run build         # compile src/ -> dist/ via tsc
 npm test              # build, then run unit tests with node:test
-npm run lint          # eslint .
+npm run lint          # oxlint .
 npm run format        # prettier --write .
 npm run format:check  # prettier --check .
 npm run demo          # build, then serve example/ at http://localhost:4173
@@ -35,6 +35,12 @@ Jest/Vitest) and compiled from `.ts` to `.js` before running — there is no
 separate ts-node/transform step, so a test-only syntax error will only show
 up as a `tsc` failure via `npm test`, not as a test failure.
 
+Linting uses `oxlint`, not ESLint — `typescript-eslint` throws a hard error
+on TypeScript 7.x (this project's `typescript` version), unresolved upstream
+as of writing ([typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)).
+Don't "fix" this by reintroducing `eslint`/`typescript-eslint` without
+checking whether that issue has landed.
+
 ## Architecture
 
 - **`src/virtualizer.ts`** — the entire core. Two things live here
@@ -49,9 +55,13 @@ up as a `tsc` failure via `npm test`, not as a test failure.
 - **`src/index.ts`** — the package's public entry point; only re-exports from
   `virtualizer.ts`. Add new public API surface here, not by exporting
   directly from `virtualizer.ts` call sites elsewhere.
-- **`src/demo/main.ts`** + **`example/index.html`** — a manual browser demo
-  (100k-row list) for exercising the core by hand. Not part of the published
-  package (`files` in `package.json` only ships `dist`).
+- **`example/main.ts`** + **`example/index.html`** — a manual browser demo
+  (100k-row list) for exercising the core by hand, living outside `src/` so
+  the library source only contains library code. It imports from
+  `../dist/index.js` (the built public entry point, not `src/` directly) and
+  is compiled by its own `example/tsconfig.json` (`npm run demo` builds the
+  library, then the example, then serves both statically). Not part of the
+  published package (`files` in `package.json` only ships `dist`).
 
 ### Core design constraints worth knowing before editing `Virtualizer`
 
@@ -62,10 +72,11 @@ up as a `tsc` failure via `npm test`, not as a test failure.
 - **`mount()` is idempotent** — safe to call twice (React StrictMode's
   mount→cleanup→mount in dev is a real scenario this guards against).
 - **`subscribe` and `getVirtualItems` are arrow fields, not prototype
-  methods**, because they're passed by bare reference to
-  `useSyncExternalStore(instance.subscribe, instance.getVirtualItems)` in the
-  planned React adapter — they can't rely on being called as
-  `instance.method()`.
+  methods**, because a framework adapter (e.g. React's
+  `useSyncExternalStore(instance.subscribe, instance.getVirtualItems)`) passes
+  them by bare reference — they can't rely on being called as
+  `instance.method()`. This library stays framework-agnostic on purpose (see
+  below); the adapter that actually calls them lives in a separate package.
 - **Scroll handling is rAF-throttled**: the native `scroll` listener
   coalesces bursts into at most one recompute per animation frame, since
   scroll events fire faster than the display refresh rate.
@@ -78,8 +89,13 @@ up as a `tsc` failure via `npm test`, not as a test failure.
 Per `docs/DESIGN.md`, milestone 1 (fixed-size vertical core — what currently
 exists) is done. Upcoming work, in order: variable-size items (prefix-sum
 array + dirty watermark + binary search + `measureElement`/`ResizeObserver`),
-a React adapter (`useVirtualizer` via `useSyncExternalStore`, needs
-`useLayoutEffect` for `mount()` to avoid a one-frame empty-content flash —
-see DESIGN.md §6 milestone 3 callout), then overscan/scroll-anchoring polish
-and a horizontal axis. `tsconfig.json` already has `jsx: react-jsx` set in
-anticipation of the React adapter.
+then overscan/scroll-anchoring polish, then a horizontal axis.
+
+**This repo stops at the framework-agnostic core.** No React (or other
+framework) adapter will be added here — no `react`/`react-dom` dependency, no
+JSX config. A separate package (e.g. `webvirtualizer-react`) will depend on
+this one and implement the adapter (`useVirtualizer` via
+`useSyncExternalStore`; see DESIGN.md §6 for a mount-timing gotcha that
+package will need to handle). Don't add framework-specific code or config to
+this repo — if a task seems to call for it, it belongs in that other package
+instead.

@@ -22,7 +22,7 @@
     "lint": "oxlint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "demo": "tsc && python3 -m http.server 4173",
+    "demo": "npm run build && tsc -p example/tsconfig.json && python3 -m http.server 4173",
     "prepublishOnly": "npm run clean && npm run lint && npm test"
   },
   "keywords": [

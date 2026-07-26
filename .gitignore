@@ -5,6 +5,12 @@ node_modules/
 dist/
 *.tsbuildinfo
 
+# Compiled example demo (built from example/main.ts)
+example/*.js
+example/*.js.map
+example/*.d.ts
+example/*.d.ts.map
+
 # Logs
 npm-debug.log*
 logs/

@@ -17,9 +17,13 @@ algorithm walkthrough, and milestone roadmap.
 
 **Milestone 1 (fixed-size vertical core)** is implemented: constant-time
 offset math, a `requestAnimationFrame`-throttled scroll listener, range
-computation, and `scrollToIndex`/`scrollToOffset`. Variable-size item support,
-a React adapter, and horizontal axis support are planned — see
+computation, and `scrollToIndex`/`scrollToOffset`. Variable-size item support
+and horizontal axis support are planned — see
 [`docs/DESIGN.md`](docs/DESIGN.md#6-milestones) for what's next.
+
+This package stays framework-agnostic on purpose: no React (or other
+framework) adapter lives here. A separate package will depend on this one
+to provide framework-specific bindings (a React adapter first).
 
 ## Install
 
@@ -54,7 +58,7 @@ render();
 ```
 
 See [`example/index.html`](example/index.html) and
-[`src/demo/main.ts`](src/demo/main.ts) for a complete working demo.
+[`example/main.ts`](example/main.ts) for a complete working demo.
 
 ## Development
 
@@ -62,7 +66,7 @@ See [`example/index.html`](example/index.html) and
 npm install       # install dependencies
 npm run build     # compile TypeScript to dist/
 npm test          # build, then run the unit tests via node:test
-npm run lint      # lint with ESLint
+npm run lint      # lint with oxlint
 npm run format    # format with Prettier
 npm run demo      # build, then serve example/ at http://localhost:4173
 ```
